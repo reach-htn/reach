@@ -1,6 +1,7 @@
 const functions = require('firebase-functions');
 const wiki = require('./wiki');
 const goose_facts = require('./goose_facts');
+const directions = require('./directions');
 
 MENU_MSG = `Valid commands:
 * menu: show this menu
@@ -19,6 +20,9 @@ exports.sms = functions.https.onRequest(async (req, res) => {
       break;
     case 'wiki':
       msg = wiki.execute();
+      break;
+    case 'directions':
+      msg = directions.execute();
       break;
     case 'roll': // rolls a dice with x amount of sides
       num = command.split(/\s+/)[1];
