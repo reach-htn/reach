@@ -1,12 +1,14 @@
 const functions = require('firebase-functions');
 const wiki = require('./wiki');
 const goose_facts = require('./goose_facts');
+const directions = require('./directions');
 
 MENU_MSG = `Valid commands:
 * menu: show this menu
 * wiki {page title} ["/" page number]: read Wikipedia pages
 * roll [number]: roll a die with that number of sides
-* goosefacts: show a random goose fact`;
+* goosefacts: show a random goose fact
+* directions from <address> to <address>: get in-text directions from one location to another`;
 
 exports.sms = functions.https.onRequest(async (req, res) => {
   let command = req.query.Body.toLowerCase();
@@ -27,6 +29,9 @@ exports.sms = functions.https.onRequest(async (req, res) => {
       break;
     case 'wiki':
       wiki.execute(command, sendit);
+      break;
+    case 'directions':
+      msg = directions.execute();
       break;
     case 'roll': // rolls a dice with x amount of sides
       let splitted = command.split(/\s+/);
