@@ -5,7 +5,8 @@ const directions = require('./directions');
 
 MENU_MSG = `Valid commands:
 * menu: show this menu
-* wiki <title> ["/" page number]: read Wikipedia pages`;
+* wiki <title> ["/" page number]: read Wikipedia pages
+* directions from <address> to <address>: get in-text directions from one location to another`;
 
 exports.sms = functions.https.onRequest(async (req, res) => {
   let msg = '';
