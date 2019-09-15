@@ -6,15 +6,15 @@ const directions = require('./directions');
 
 MENU_MSG = `Valid commands:
 * menu: show this menu
-* wiki {page title} ["/" page number]: read Wikipedia pages
+* wiki {page title}: read Wikipedia pages
 * roll [number]: roll a die with that number of sides
 * goosefacts: show a random goose fact
 * directions from {address} to {address}: get in-text directions from one location to another
 * weather {city} {country/country code}: get information about the weather`;
 
 exports.sms = functions.https.onRequest(async (req, res) => {
-  let command = req.query.Body.toLowerCase();
-  let commandName = command.split(/\s+/)[0];
+  let command = req.query.Body;
+  let commandName = command.split(/\s+/)[0].toLowerCase();
   
   sendit = (msg) => {
     res.send(`

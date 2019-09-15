@@ -6,8 +6,8 @@ module.exports.execute = (command, cb) => { // TODO: pagination
       return "Error: no Wikipedia page title specified";
     }
     let title = args[1];
-    for (var i = 2; i < args.length && args[i] != '/'; i++) {
-      title += '%20' + args[i];
+    for (var i = 2; i < args.length; i++) {
+      title += ' ' + args[i];
     }
     superagent.get('http://en.wikipedia.org/w/api.php').query({
       'format': 'json',
@@ -38,12 +38,12 @@ module.exports.execute = (command, cb) => { // TODO: pagination
       if (articleText.match(/^\w+\s+\(.+\)/)) {
         articleText = articleText.replace(/\(.+\)\s/, ''); // single match removed
       }
-      // trim to first 500 bytes
-      if (articleText.length > 500) {
-        articleText = articleText.substring(0, 500);
+      // trim to first 220 bytes - 2-ish segments max, probably?
+      if (articleText.length > 220) {
+        articleText = articleText.substring(0, 220);
       }
       articleText += '...'; // yeah there's more to the article
-      cb(`Article "${articleTitle}": ${articleText}`);
+      cb(`"${articleTitle}" on Wikipedia: ${articleText}`);
     }).catch(err => {
       cb(`Error: ${err.message}`);
     });
