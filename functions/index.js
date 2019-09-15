@@ -5,6 +5,7 @@ const goose_facts = require('./goose_facts');
 const directions = require('./directions');
 const currency = require('./currency');
 const news = require('./news');
+const convert = require('./convert');
 
 MENU_MSG = `Valid commands:
 * menu: show this menu
@@ -14,8 +15,7 @@ MENU_MSG = `Valid commands:
 * directions from {address} to {address}: get in-text directions from one location to another
 * weather {city}, {country name/code}: get information about the weather
 * news {country}: get country-specific news and information 
-* convert {value} {original currency code} to {new currency code}: convert from one currency to another`;
-
+* convert {conversion type} {value} {original unit} to {new unit}: convert between units`;
 
 exports.sms = functions.https.onRequest(async (req, res) => {
   let command = req.query.Body;
@@ -59,7 +59,18 @@ exports.sms = functions.https.onRequest(async (req, res) => {
       weather.execute(command, sendit);
       break;
     case 'convert':
-      currency.execute(command, sendit);
+      let conSplit = command.split(/\s+/);
+      if (conSplit.length < 2) {
+        sendit('Error: no conversion info included');
+        break;
+      }
+      let convertType = conSplit[1];
+      if (convertType == "currency"){
+       currency.execute(command, sendit);
+      }
+      else{
+       convert.execute(command, sendit);
+      }
       break;
     default:
       sendit(`Unrecognized command.\n${MENU_MSG}`);

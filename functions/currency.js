@@ -21,21 +21,21 @@ function convertCurrency(value, curOrig, curNew, cb){
 
 module.exports.execute = (command, cb) => {
   let args = command.split(/\s+/);
-  if (args.length < 2) {
+  if (args.length < 3) {
 		cb("Error: Value and currencies not specified");
 		return;
   }
-  if (isNaN(args[1])) {
+  if (isNaN(args[2])) {
 		cb("Error: First argument must be a numerical value");
   }
-  let val = +args[1];
-  let cOrig = args[2];
+  let val = +args[2];
+  let cOrig = args[3];
   let cNew;
   
-  if (args[3] == "to") {
-		cNew = args[4];
+  if (args[4] == "to") {
+		cNew = args[5];
   } else {
-		cNew = args[3];
+		cNew = args[4];
   }
   
   convertCurrency(val, cOrig, cNew, cb);
