@@ -5,6 +5,7 @@ const goose_facts = require('./goose_facts');
 const directions = require('./directions');
 const currency = require('./currency');
 const news = require('./news');
+const convert = require('./convert');
 
 MENU_MSG = `Valid commands:
 * menu: show this menu
