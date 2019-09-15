@@ -14,7 +14,7 @@ MENU_MSG = `Valid commands:
 * directions from {address} to {address}: get in-text directions from one location to another
 * weather {city}, {country name/code}: get information about the weather
 * news {city}, {country name/code}: get local news and information 
-* convert {value} {original currency code} to {new currency code}: convert from one currency to another`;
+* convert {conversion type} {value} {original unit to {new unit}: convert between units`;
 
 
 exports.sms = functions.https.onRequest(async (req, res) => {
@@ -58,11 +58,19 @@ exports.sms = functions.https.onRequest(async (req, res) => {
     case 'weather': //reads information about the weather
       weather.execute(command, sendit);
       break;
-    case 'convertcurrency':
-      currency.execute(command, sendit);
-      break;
     case 'convert':
-      convert.execute(command, sendit);
+      let conSplit = command.split(/\s+/);
+      if (conSplit.length < 2) {
+        sendit('Error: no conversion info included');
+        break;
+      }
+      let convertType = conSplit[1];
+      if (convertType == "currency"){
+       currency.execute(command, sendit);
+      }
+      else{
+       convert.execute(command, sendit);
+      }
       break;
     default:
       sendit(`Unrecognized command.\n${MENU_MSG}`);
