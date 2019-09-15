@@ -53,8 +53,11 @@ exports.sms = functions.https.onRequest(async (req, res) => {
     case 'weather': //reads information about the weather
       weather.execute(command, sendit);
       break;
-    case 'convert':
+    case 'convertcurrency':
       currency.execute(command, sendit);
+      break;
+    case 'convert':
+      convert.execute(command, sendit);
       break;
     default:
       sendit(`Unrecognized command.\n${MENU_MSG}`);
