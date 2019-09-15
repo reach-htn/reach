@@ -22,11 +22,6 @@ module.exports.execute = (command, cb) => {
         `Pressure: ${(res.body.main.pressure/10).toFixed(1)} kPa\n` +
         `Wind speed: ${(res.body.wind.speed*3.6).toFixed(1)} km/h\n` +
         `Overall: ${res.body.weather[0].description}.\n`);
-      
-      const description = res.body.weather[0].description;
-      const temp = res.body.main.temp;
-      
-      cb(`Weather in "${args[1]}":\n Temperature: "${temp}"\n Desc.: ${description}`);
     }).catch(err => { cb('could not retrieve weather data'); });
   } catch (e) {
     console.error(e);
