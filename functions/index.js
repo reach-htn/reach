@@ -3,6 +3,7 @@ const wiki = require('./wiki');
 const weather = require('./weather');
 const goose_facts = require('./goose_facts');
 const directions = require('./directions');
+const currency = require('./currency');
 
 MENU_MSG = `Valid commands:
 * menu: show this menu
@@ -10,7 +11,8 @@ MENU_MSG = `Valid commands:
 * roll [number]: roll a die with that number of sides
 * goosefacts: show a random goose fact
 * directions from {address} to {address}: get in-text directions from one location to another
-* weather {city}, {country name/code}: get information about the weather`;
+* weather {city}, {country name/code}: get information about the weather
+* convert {value} {original currency code} to {new currency code}: convert from one currency to another`;
 
 
 exports.sms = functions.https.onRequest(async (req, res) => {
@@ -50,6 +52,9 @@ exports.sms = functions.https.onRequest(async (req, res) => {
       break;
     case 'weather': //reads information about the weather
       weather.execute(command, sendit);
+      break;
+    case 'convert':
+      currency.execute(command, sendit);
       break;
     default:
       sendit(`Unrecognized command.\n${MENU_MSG}`);
