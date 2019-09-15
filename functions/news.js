@@ -1,33 +1,37 @@
+const functions = require('firebase-functions');
+const getIso2 = require('./toiso2');
 const NewsAPI = require('newsapi');
-const newsapi = new NewsAPI('c7b8594b075e4b07ab47e2c7c21d6e30');
+const newsapi = new NewsAPI(functions.config().newsapi.key);
 
 module.exports.execute = (command, cb) => {
-
-// To query /v2/top-headlines
-// All options passed to topHeadlines are optional, but you need to include at least one of them
-newsapi.v2.topHeadlines({
-  sources: 'bbc-news,the-verge',
-  q: 'bitcoin',
-  category: 'business',
-  language: 'en',
-  country: 'us'
-}).then(response => {
-  let text = "Your top five articles are";   
-  for(var i = 0; i < 5 && i < response.articles.length; i++){
-      text += i + 1
-      text += response.articles[i].title;
-  } 
-  cb(text); 
-
-  console.log(response);
-  /*
-    {
-      status: "ok",
-      articles: [...]
+  let args = command.split(/\s+/g);
+  if (args.length < 2) {
+    cb('Too few arguments: please enter a country.');
+    return;
+  }
+  country = args[1];
+  for (let i = 2; i < args.length; i++) {
+    country += ' ' + args[i];
+  }
+  let iso2 = getIso2(country);
+  if (iso2 === null) {
+    cb('Unrecognized country "' + country + '".');
+    return;
+  }
+  newsapi.v2.topHeadlines({
+    country: iso2
+  }).then(response => {
+    if (response.status === 'error') {
+      cb('Error: could not retrieve news');
+      console.log(`Error on retrieving news: ${response.status}, ${response.message}`);
+      return;
     }
-  */
-});
-// To query /v2/everything
-// You must include at least one q, source, or domain
-
+    console.log(response);
+    let numArticles = Math.min(5, response.totalResults);
+    let text = `Your top ${numArticles} articles are:`;
+    for (var i = 0; i < numArticles; i++) {
+      text += '\n' + (i+1) + '. ' + response.articles[i].title;
+    } 
+    cb(text); 
+  });
 }
