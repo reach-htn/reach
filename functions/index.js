@@ -48,7 +48,7 @@ exports.sms = functions.https.onRequest(async (req, res) => {
       sendit(goose_facts.facts[Math.floor(Math.random() * Math.floor(15))]);
       break;
     case 'weather': //reads information about the weather
-      weather.execute();
+      weather.execute(command, sendit);
       break;
     default:
       sendit(`Unrecognized command.\n${MENU_MSG}`);
