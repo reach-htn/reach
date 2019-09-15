@@ -1,5 +1,7 @@
 const superagent = require('superagent');
 var lookup = require('country-code-lookup'); //https://www.npmjs.com/package/country-code-lookup
+const K2C = 273.2;
+
 module.exports.execute = (command, cb) => {
   try {
     const args = command.split(',');
@@ -19,11 +21,13 @@ module.exports.execute = (command, cb) => {
         cb(`Error ${res.status}: ${res.text}`);
         return;
       }
-      
-      const description = res.weather.description;
-      const temp = res.main.temp;
-      
-      cb(`Weather in "${args[1]}":\n Temperature: "${temp}"\n Desc.: ${description}`);
+      cb(`Weather in ${res.body.name}, ${res.body.sys.country}:\n` +
+        `Temperature: ${(res.body.main.temp-K2C).toFixed(1)}°C (min: ${(res.body.main.temp_min-K2C).toFixed(1)}°C, ` +
+        `max: ${(res.body.main.temp_max-K2C).toFixed(1)}°C)\n` +
+        `Humidity: ${(res.body.main.humidity).toFixed(0)}%\n` +
+        `Pressure: ${(res.body.main.pressure/10).toFixed(1)} kPa\n` +
+        `Wind speed: ${(res.body.wind.speed*3.6).toFixed(1)} km/h\n` +
+        `Overall: ${res.body.weather[0].description}.\n`);
     }).catch(err => { cb('could not retrieve weather data'); });
   } catch (e) {
     console.error(e);

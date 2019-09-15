@@ -9,8 +9,9 @@ MENU_MSG = `Valid commands:
 * wiki {page title} ["/" page number]: read Wikipedia pages
 * roll [number]: roll a die with that number of sides
 * goosefacts: show a random goose fact
-* directions from <address> to <address>: get in-text directions from one location to another
-* weather <city>,<country name>: get information about the weather`;
+* directions from {address} to {address}: get in-text directions from one location to another
+* weather {city},{country}: get information about the weather`;
+
 
 exports.sms = functions.https.onRequest(async (req, res) => {
   let command = req.query.Body.toLowerCase();
@@ -33,7 +34,7 @@ exports.sms = functions.https.onRequest(async (req, res) => {
       wiki.execute(command, sendit);
       break;
     case 'directions':
-      msg = directions.execute();
+      directions.execute(command, sendit);
       break;
     case 'roll': // rolls a dice with x amount of sides
       let splitted = command.split(/\s+/);
@@ -48,7 +49,7 @@ exports.sms = functions.https.onRequest(async (req, res) => {
       sendit(goose_facts.facts[Math.floor(Math.random() * Math.floor(15))]);
       break;
     case 'weather': //reads information about the weather
-      weather.execute();
+      weather.execute(command, sendit);
       break;
     default:
       sendit(`Unrecognized command.\n${MENU_MSG}`);
