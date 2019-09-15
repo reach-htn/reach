@@ -1,9 +1,4 @@
-import * as converter from 'units-converter';
-
-function convertUnits(convType, value, unitOrig, unitNew, cb){
-	let newVal = converter[convType](value).from(unitOrig).to(unitNew).value;
-	cb(value + " " + unitOrig + " = " + unitNew + " " + newVal);
-}
+const converter = require('units-converter');
 
 module.exports.execute = (command, cb) => {
   let args = command.split(/\s+/);
@@ -12,11 +7,13 @@ module.exports.execute = (command, cb) => {
 		return;
   }
   if (isNaN(args[2])) {
-		cb("Error: First argument must be a numerical value");
+    cb("Error: First argument must be a numerical value");
+    return;
   }
   let conType = args[1];
-  if(!(converter.hasOwnProperty(conType))){
-	cb("Error: Conversion type does not exist");
+  if (!(converter.hasOwnProperty(conType))) {
+    cb("Error: Conversion type does not exist");
+    return;
   }
   
   let val = +args[2];
@@ -28,9 +25,12 @@ module.exports.execute = (command, cb) => {
   } else {
 		uNew = args[4];
   }
-  if(!(converter[conType].hasOwnProperty(uOrig)) || !(converter[conType].hasOwnProperty(uNew))){
-	cb("Error: Units do not match conversion type");
-  }
   
-  convertUnits(conType, val, uOrig, uNew, cb);
+  try {
+    let newVal = converter[conType](val).from(uOrig).to(uNew).value;
+    cb(val + " " + uOrig + " = " + newVal + " " + uNew);
+  } catch (e) {
+    console.log(e);
+    cb(`Error: could not convert from ${uOrig} to ${uNew} using ${conType}.`);
+  }
 };

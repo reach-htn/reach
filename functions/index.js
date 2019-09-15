@@ -65,10 +65,9 @@ exports.sms = functions.https.onRequest(async (req, res) => {
         break;
       }
       let convertType = conSplit[1];
-      if (convertType == "currency"){
-       currency.execute(command, sendit);
-      }
-      else{
+      if (convertType == "currency") {
+        currency.execute(command, sendit);
+      } else {
        convert.execute(command, sendit);
       }
       break;
