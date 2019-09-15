@@ -4,6 +4,7 @@ const weather = require('./weather');
 const goose_facts = require('./goose_facts');
 const directions = require('./directions');
 const currency = require('./currency');
+const news = require('./news');
 
 MENU_MSG = `Valid commands:
 * menu: show this menu
@@ -12,6 +13,7 @@ MENU_MSG = `Valid commands:
 * goosefacts: show a random goose fact
 * directions from {address} to {address}: get in-text directions from one location to another
 * weather {city}, {country name/code}: get information about the weather
+* news {city}, {country name/code}: get local news and information 
 * convert {value} {original currency code} to {new currency code}: convert from one currency to another`;
 
 
@@ -34,6 +36,9 @@ exports.sms = functions.https.onRequest(async (req, res) => {
       break;
     case 'wiki':
       wiki.execute(command, sendit);
+      break;
+    case 'news':
+      news.execute(command, sendit);
       break;
     case 'directions':
       directions.execute(command, sendit);
