@@ -1,21 +1,28 @@
+const admin = require('firebase-admin');
 const functions = require('firebase-functions');
+
+admin.initializeApp(functions.config().firebase);
+let db = admin.firestore();
+
 const wiki = require('./wiki');
 const weather = require('./weather');
 const goose_facts = require('./goose_facts');
 const directions = require('./directions');
 const currency = require('./currency');
 const news = require('./news');
+const more = require('./more');
 const convert = require('./convert');
 
 MENU_MSG = `Valid commands:
 * menu: show this menu
 * wiki {page title}: read Wikipedia pages
-* roll [number]: roll a die with that number of sides
-* goosefacts: show a random goose fact
-* directions from {address} to {address}: get in-text directions from one location to another
-* weather {city}, {country name/code}: get information about the weather
-* news {country}: get country-specific news and information 
-* convert {conversion type} {value} {original unit} to {new unit}: convert between units`;
+* directions from {address} to {address}: get directions from one location to another
+* weather {city}, {country name/code}: get weather info
+* news {country}: get country-specific news
+* more {number}: get more of an article
+* convert {conversion type} {value} {original unit} to {new unit}: do unit conversion
+* roll [number]: roll a {number}-sided die
+* goosefacts: get a random goose fact`;
 
 exports.sms = functions.https.onRequest(async (req, res) => {
   let command = req.query.Body;
@@ -38,7 +45,10 @@ exports.sms = functions.https.onRequest(async (req, res) => {
       wiki.execute(command, sendit);
       break;
     case 'news':
-      news.execute(command, sendit);
+      news.execute(command, req.query.From, db, sendit);
+      break;
+    case 'more':
+      more.execute(command, req.query.From, db, sendit);
       break;
     case 'directions':
       directions.execute(command, sendit);
