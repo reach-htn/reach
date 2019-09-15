@@ -7,10 +7,10 @@ function convertCurrency(value, curOrig, curNew, cb){
 	}).timeout({response: 1000, deadline: 2000}).then(res => {
 		let currencyTable = res.body;
 		
-		if(!(currencyTable.rates.hasOwnProperty(curOrig)) || !(currencyTable.rates.hasOwnProperty(curNew))){
+		if (!(currencyTable.rates.hasOwnProperty(curOrig)) || !(currencyTable.rates.hasOwnProperty(curNew))) {
 			cb("Error: Invalid currency codes");
 		}
-		let newValue = (value / currencyTable.rates[curOrig] * currencyTable.rate[curNew]).toFixed(2);
+		let newValue = (value / currencyTable.rates[curOrig] * currencyTable.rates[curNew]).toFixed(2);
 		
 		cb(value + " " + curOrig + " = " + newValue + " " + curNew);
 	}).catch(err => {
@@ -25,18 +25,17 @@ module.exports.execute = (command, cb) => {
 		cb("Error: Value and currencies not specified");
 		return;
   }
-  if(isNaN(args[1])){
-	cb("Error: First argument must be a numerical value");
+  if (isNaN(args[1])) {
+		cb("Error: First argument must be a numerical value");
   }
   let val = +args[1];
   let cOrig = args[2];
   let cNew;
   
-  if (args[3] == "to"){
-	cNew = args[4];
-  }
-  else{
-	cNew = args[3];
+  if (args[3] == "to") {
+		cNew = args[4];
+  } else {
+		cNew = args[3];
   }
   
   convertCurrency(val, cOrig, cNew, cb);
