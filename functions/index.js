@@ -13,8 +13,8 @@ MENU_MSG = `Valid commands:
 * goosefacts: show a random goose fact
 * directions from {address} to {address}: get in-text directions from one location to another
 * weather {city}, {country name/code}: get information about the weather
-* news {city}, {country name/code}: get local news and information 
-* convert {value} {original currency code} to {new currency code}: convert from one currency to another`;
+* news {city}, {country name/code}: get local news and information
+* convertcurrency {value} {original currency code} to {new currency code}: convert from one currency to another`;
 
 
 exports.sms = functions.https.onRequest(async (req, res) => {
