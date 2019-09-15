@@ -10,7 +10,7 @@ MENU_MSG = `Valid commands:
 * roll [number]: roll a die with that number of sides
 * goosefacts: show a random goose fact
 * directions from <address> to <address>: get in-text directions from one location to another
-* weather <city> <Country Code>: get information about the weather`;
+* weather <city>,<country name>: get information about the weather`;
 
 exports.sms = functions.https.onRequest(async (req, res) => {
   let command = req.query.Body.toLowerCase();
